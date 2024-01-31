@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 16:11:34 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 16:04:52 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 20:48:58 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	main(int argc, char *argv[])
 		return (1);
 	if (init_all(argc, argv, &data) == OUT)
 		return (1);
-	show_data(&data);
+	//show_data(&data);
 	if (data.num_philo == 1)
 	{
 		data.t_start = get_now_time();
@@ -123,7 +123,7 @@ int	main(int argc, char *argv[])
 			return (error_return1("ERROR WHILE CREATING THREADS", &data));
 		pthread_detach(data.thread[0]);
 		while (data.dead == false)
-			usleep(0);
+			my_sleep(0);
 		destroy_free(&data);
 		return (0);
 	}

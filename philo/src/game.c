@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 18:46:56 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 18:11:47 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 21:38:20 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ void	put_msg(t_philo *pp, char *msg)
 	if (ft_strncmp("died", msg, sizeof("died")) == 0 && pp->d->dead == false)
 	{
 		printf("%llu %d %s\n", time_stamp, pp->id, msg);
+		pthread_mutex_lock(&pp->d->mutex_data);
 		pp->d->dead = true;
+		pthread_mutex_unlock(&pp->d->mutex_data);
 	}
 	if (!pp->d->dead)
 		printf("%llu %d %s\n", time_stamp, pp->id, msg);
@@ -57,8 +59,8 @@ void	*philo(void *p_philo)
 	t_philo		*philo;
 
 	philo = (t_philo *)p_philo;
-	//if (philo->d->num_philo % 2 == 0)
-	//	my_sleep(philo->d->t_eat / 10);
+	if (philo->d->num_philo % 2 == 0)
+		my_sleep(philo->d->t_eat / 10);
 	if (pthread_create(&philo->monitor, NULL, &monitor, philo) == FAILED)
 		exit(error_return1("Failed to create monitor thread.", philo->d));
 	while (philo->d->dead != true)
@@ -79,7 +81,7 @@ void	*g_monitor(void *p_data)
 
 	d = (t_data *)p_data;
 	//pthread_mutex_lock(&d->mutex_printf);
-	////printf("data val: %d", &d->dead);
+	////printf("data val: %d", (int)(&d->dead));
 	//pthread_mutex_unlock(&d->mutex_printf);
 	while (d->dead == false)
 	{
@@ -105,7 +107,7 @@ bool	game(t_data *d)
 	{
 		if (pthread_create(&d->thread[i], NULL, philo, &d->philo[i]) == FAILED)
 			exit(error_return1("Failed to create thread.", d));
-		usleep(1);
+		my_sleep(1);
 	}
 	i = -1;
 	while (++i < d->num_philo)

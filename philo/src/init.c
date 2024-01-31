@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:46:02 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 18:07:00 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 21:05:30 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static bool	init_data(int ac, char *av[], t_data *d)
 	if (d->num_philo < 0 || d->t_die < 0 || d->t_eat < 0 || d->t_sleep < 0
 		|| (ac == 6 && d->num_m_eat < 0))
 		return (error_return1("Error: Invalid argument.", d));
+	d->t_start = 0;
 	pthread_mutex_init(&d->mutex_printf, NULL);
 	pthread_mutex_init(&d->mutex_data, NULL);
 	d->dead = false;
@@ -59,13 +60,13 @@ static bool	init_data_fork(t_data *d)
 	i = -1;
 	while (++i < d->num_philo)
 		pthread_mutex_init(&d->mutex_forks[i], NULL);
-	d->philo[0].mutex_fork_left = d->mutex_forks[0];
-	d->philo[0].mutex_fork_right = d->mutex_forks[d->num_philo - 1];
+	d->philo[0].mutex_fork_left = &d->mutex_forks[0];
+	d->philo[0].mutex_fork_right = &d->mutex_forks[d->num_philo - 1];
 	i = 0;
 	while (++i < d->num_philo)
 	{
-		d->philo[i].mutex_fork_left = d->mutex_forks[i];
-		d->philo[i].mutex_fork_right = d->mutex_forks[i - 1];
+		d->philo[i].mutex_fork_left = &d->mutex_forks[i];
+		d->philo[i].mutex_fork_right = &d->mutex_forks[i - 1];
 	}
 	return (SAFE);
 }
@@ -77,17 +78,18 @@ static void	init_data_philo(t_data *d)
 	i = -1;
 	while (++i < d->num_philo)
 	{
-		d->philo[i].d = d;
 		d->philo[i].id = i + 1;
-		d->philo[i].t_to_die = d->t_die;
 		d->philo[i].eat_count = 0;
 		d->philo[i].eating = false;
+		d->philo[i].t_to_die = d->t_die;
 		pthread_mutex_init(&d->philo[i].mutex_philo, NULL);
+		d->philo[i].d = d;
 	}
 }
 
 bool	init_all(int ac, char *av[], t_data *d)
 {
+	memset(d, 0, sizeof(t_data));
 	if (init_data(ac, av, d) == OUT)
 		return (OUT);
 	if (init_data_alloc(d) == OUT)

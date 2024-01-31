@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 16:23:35 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 18:12:06 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 21:39:18 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,18 @@
 
 typedef struct s_philo
 {
-	pthread_t		monitor;
-	int				id;
+	pthread_t			monitor;
+	int					id;
 
-	unsigned int	eat_count;
-	bool			eating;
-	uint64_t		t_to_die;
-
+	unsigned int		eat_count;
+	bool				eating;
+	uint64_t			t_to_die;
 
 	pthread_mutex_t		mutex_philo;
-	pthread_mutex_t		mutex_fork_left;
-	pthread_mutex_t		mutex_fork_right;
+	pthread_mutex_t		*mutex_fork_left;
+	pthread_mutex_t		*mutex_fork_right;
 
-	struct s_data	*d;
+	struct s_data		*d;
 }				t_philo;
 
 typedef struct s_data
@@ -54,8 +53,8 @@ typedef struct s_data
 	unsigned int	num_m_eat;
 	uint64_t		t_start;
 
-	pthread_t		*thread;
 	pthread_t		g_monitor;
+	pthread_t		*thread;
 	t_philo			*philo;
 	pthread_mutex_t	*mutex_forks;
 
