@@ -6,7 +6,7 @@
 #    By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/20 17:08:52 by miyazawa.ka       #+#    #+#              #
-#    Updated: 2024/01/17 15:04:11 by miyazawa.ka      ###   ########.fr        #
+#    Updated: 2024/01/31 14:46:59 by miyazawa.ka      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,7 +85,8 @@ LIBNAME			= libft
 SRC				=   main.c \
 					game.c \
 					show.c \
-					opt.c
+					opt.c  \
+					init.c
 
 # Enumeration of directories
 SRCDIR			= ./src

@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 18:46:56 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/17 21:47:40 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 18:11:47 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ void	put_msg(t_philo *pp, char *msg)
 	pthread_mutex_lock(&(pp->d->mutex_printf));
 	time_stamp = get_now_time() - pp->d->t_start;
 
-	pthread_mutex_unlock(&(pp->d->mutex_printf));
-	if (ft_strncmp("died", msg, sizeof("died")) == 0 && pp->d->dead == 0)
+	if (ft_strncmp("died", msg, sizeof("died")) == 0 && pp->d->dead == false)
 	{
 		printf("%llu %d %s\n", time_stamp, pp->id, msg);
 		pp->d->dead = true;
@@ -50,7 +49,7 @@ void	*monitor(void *p_philo)
 		}
 		pthread_mutex_unlock(&(philo->mutex_philo));
 	}
-	return (NULL);
+	return ((void *)0);
 }
 
 void	*philo(void *p_philo)
@@ -58,10 +57,10 @@ void	*philo(void *p_philo)
 	t_philo		*philo;
 
 	philo = (t_philo *)p_philo;
-	if (philo->d->num_philo % 2 == 0)
-		my_sleep(philo->d->t_eat / 10);
+	//if (philo->d->num_philo % 2 == 0)
+	//	my_sleep(philo->d->t_eat / 10);
 	if (pthread_create(&philo->monitor, NULL, &monitor, philo) == FAILED)
-		exit(EXIT_FAILURE);
+		exit(error_return1("Failed to create monitor thread.", philo->d));
 	while (philo->d->dead != true)
 	{
 		eat(philo);
@@ -70,8 +69,8 @@ void	*philo(void *p_philo)
 		put_msg(philo, "thinking");
 	}
 	if (pthread_join(philo->monitor, NULL) == FAILED)
-		exit(EXIT_FAILURE);
-	return (NULL);
+		exit(error_return1("Failed to join monitor thread.", philo->d));
+	return ((void *)0);
 }
 
 void	*g_monitor(void *p_data)
@@ -79,14 +78,14 @@ void	*g_monitor(void *p_data)
 	t_data	*d;
 
 	d = (t_data *)p_data;
-	pthread_mutex_lock(&d->mutex_printf);
-	//printf("data val: %d", &d->dead);
-	pthread_mutex_unlock(&d->mutex_printf);
+	//pthread_mutex_lock(&d->mutex_printf);
+	////printf("data val: %d", &d->dead);
+	//pthread_mutex_unlock(&d->mutex_printf);
 	while (d->dead == false)
 	{
 		pthread_mutex_lock(&(d->philo[0].mutex_philo));
 		if (d->finished >= (unsigned int)d->num_philo)
-			d->dead = 1;
+			d->dead = true;
 		pthread_mutex_unlock(&(d->philo[0].mutex_philo));
 	}
 	return ((void *)0);
@@ -97,20 +96,22 @@ bool	game(t_data *d)
 	int			i;
 
 	d->t_start = get_now_time();
-	if (d->num_m_eat > 0 && pthread_create(&d->g_monitor, NULL, &g_monitor, d) == FAILED)
-		exit(EXIT_FAILURE);
+	if (d->num_m_eat > 0 &&
+		pthread_create(&d->g_monitor, NULL, &g_monitor, d) == FAILED)
+		exit(error_return1("Failed to create monitor thread.", d));
 
 	i = -1;
 	while (++i < d->num_philo)
 	{
 		if (pthread_create(&d->thread[i], NULL, philo, &d->philo[i]) == FAILED)
-			exit(EXIT_FAILURE);
+			exit(error_return1("Failed to create thread.", d));
+		usleep(1);
 	}
 	i = -1;
 	while (++i < d->num_philo)
 	{
 		if (pthread_join(d->thread[i], NULL) == FAILED)
-			exit(EXIT_FAILURE);
+			exit(error_return1("Failed to join thread.", d));
 	}
 	return (SAFE);
 }

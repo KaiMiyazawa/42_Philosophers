@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 16:23:35 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/17 21:48:19 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/01/31 18:12:06 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_philo
 	int				id;
 
 	unsigned int	eat_count;
-	//int				status;
 	bool			eating;
 	uint64_t		t_to_die;
 
@@ -62,7 +61,6 @@ typedef struct s_data
 
 	pthread_mutex_t	mutex_printf;
 	pthread_mutex_t	mutex_data;
-	//int				meals_nb;
 	bool			dead;
 	unsigned int	finished;
 }				t_data;
@@ -75,6 +73,14 @@ uint64_t	get_now_time(void);
 void		eat(t_philo *philo);
 void		put_msg(t_philo *pp, char *str);
 void		my_sleep(uint64_t t_sleep);
+
+
+void	*philo(void *p_philo);
+
+
+bool	init_all(int ac, char *av[], t_data *d);
+bool	error_return1(char *msg, t_data *data);
+void	destroy_free(t_data *data);
 
 
 
