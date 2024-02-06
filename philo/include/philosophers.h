@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 16:23:35 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 21:39:18 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/06 17:40:06 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 
 # include <stdbool.h>
 # include <limits.h>
-# include "../libft/libft.h"
 
 # define FAILED -1
 # define SAFE 0
@@ -65,21 +64,20 @@ typedef struct s_data
 }				t_data;
 
 bool		game(t_data *data);
-void		show_time(struct timeval time);
-void		show_data(t_data *data);
 
 uint64_t	get_now_time(void);
 void		eat(t_philo *philo);
 void		put_msg(t_philo *pp, char *str);
 void		my_sleep(uint64_t t_sleep);
 
+void		*philo(void *p_philo);
 
-void	*philo(void *p_philo);
+bool		init_all(int ac, char *av[], t_data *d);
+bool		error_return1(char *msg, t_data *data);
+void		destroy_free(t_data *data);
 
-
-bool	init_all(int ac, char *av[], t_data *d);
-bool	error_return1(char *msg, t_data *data);
-void	destroy_free(t_data *data);
+void		*ft_calloc(size_t size);
+int			ft_atoi(const char *nptr);
 
 
 

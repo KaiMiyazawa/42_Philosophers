@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 14:16:39 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 22:02:35 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/06 18:16:53 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ uint64_t	get_now_time(void)
 void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->mutex_fork_left);
-	put_msg(philo, "has taken a fork");
 	pthread_mutex_lock(philo->mutex_fork_right);
+	put_msg(philo, "has taken a fork");
 	put_msg(philo, "has taken a fork");
 
 	pthread_mutex_lock(&(philo->mutex_philo));

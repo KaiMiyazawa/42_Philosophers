@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 18:46:56 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 21:38:20 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/06 18:19:02 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ void	put_msg(t_philo *pp, char *msg)
 	pthread_mutex_lock(&(pp->d->mutex_printf));
 	time_stamp = get_now_time() - pp->d->t_start;
 
-	if (ft_strncmp("died", msg, sizeof("died")) == 0 && pp->d->dead == false)
+	if ((msg[0] == 'd') && pp->d->dead == false)
 	{
 		printf("%llu %d %s\n", time_stamp, pp->id, msg);
+		pthread_mutex_unlock(&pp->d->mutex_printf);
 		pthread_mutex_lock(&pp->d->mutex_data);
 		pp->d->dead = true;
 		pthread_mutex_unlock(&pp->d->mutex_data);
+		pthread_mutex_lock(&pp->d->mutex_printf);
 	}
 	if (!pp->d->dead)
 		printf("%llu %d %s\n", time_stamp, pp->id, msg);
@@ -40,13 +42,13 @@ void	*monitor(void *p_philo)
 	while (philo->d->dead != true)
 	{
 		pthread_mutex_lock(&(philo->mutex_philo));
-		if (get_now_time() > philo->t_to_die && philo->eating == false)
+		if (get_now_time() >= philo->t_to_die && philo->eating == false)
 			put_msg(philo, "died");
 		if (philo->eat_count == philo->d->num_m_eat)
 		{
+			philo->eat_count++;
 			pthread_mutex_lock(&philo->d->mutex_data);
 			philo->d->finished++;
-			philo->eat_count++;
 			pthread_mutex_unlock(&philo->d->mutex_data);
 		}
 		pthread_mutex_unlock(&(philo->mutex_philo));
@@ -61,14 +63,17 @@ void	*philo(void *p_philo)
 	philo = (t_philo *)p_philo;
 	if (philo->d->num_philo % 2 == 0)
 		my_sleep(philo->d->t_eat / 10);
+	pthread_mutex_lock(&philo->mutex_philo);
+	philo->t_to_die = philo->d->t_die + get_now_time();
+	pthread_mutex_unlock(&philo->mutex_philo);
 	if (pthread_create(&philo->monitor, NULL, &monitor, philo) == FAILED)
 		exit(error_return1("Failed to create monitor thread.", philo->d));
 	while (philo->d->dead != true)
 	{
 		eat(philo);
-		put_msg(philo, "sleeping");
+		put_msg(philo, "is sleeping");
 		my_sleep(philo->d->t_sleep);
-		put_msg(philo, "thinking");
+		put_msg(philo, "is thinking");
 	}
 	if (pthread_join(philo->monitor, NULL) == FAILED)
 		exit(error_return1("Failed to join monitor thread.", philo->d));
