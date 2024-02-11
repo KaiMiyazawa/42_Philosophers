@@ -5,97 +5,80 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 14:46:02 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/01/31 21:05:30 by miyazawa.ka      ###   ########.fr       */
+/*   Created: 2024/02/06 18:53:52 by miyazawa.ka       #+#    #+#             */
+/*   Updated: 2024/02/07 11:33:40 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philosophers.h"
+#include "philo.h"
 
-static bool	init_data(int ac, char *av[], t_data *d)
+bool	init_data(t_data *data, int ac, char **av)
 {
-	d->num_philo = ft_atoi(av[1]);
-	d->t_die = ft_atoi(av[2]);
-	d->t_eat = ft_atoi(av[3]);
-	d->t_sleep = ft_atoi(av[4]);
+	data->num_of_philo = ft_atoi(av[1]);
+	data->time_to_die = ft_atoi(av[2]);
+	data->time_to_eat = ft_atoi(av[3]);
+	data->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-		d->num_m_eat = ft_atoi(av[5]);
+		data->num_of_must_eat = ft_atoi(av[5]);
 	else
-		d->num_m_eat = -1;
-	if (d->num_philo < 0 || d->t_die < 0 || d->t_eat < 0 || d->t_sleep < 0
-		|| (ac == 6 && d->num_m_eat < 0))
-		return (error_return1("Error: Invalid argument.", d));
-	d->t_start = 0;
-	pthread_mutex_init(&d->mutex_printf, NULL);
-	pthread_mutex_init(&d->mutex_data, NULL);
-	d->dead = false;
-	d->finished = 0;
-	return (SAFE);
+		data->num_of_must_eat = -1;
+	if (data->num_of_philo < 1 || data->time_to_die < 0 || data->time_to_eat < 0
+		|| data->time_to_sleep < 0 || data->num_of_must_eat < -1)
+		return (printf("Error: Invalid argument.\n"), true);
+	pthread_mutex_init(&data->mu_printf, NULL);
+	pthread_mutex_init(&data->mu_data, NULL);
+	data->end_flag = false;
+	data->finished_count = 0;
+	return (false);
 }
 
-static bool	init_data_alloc(t_data *d)
-{
-	d->thread = (pthread_t *)malloc(sizeof(pthread_t) * d->num_philo);
-	if (!d->thread)
-		return (error_return1("Error: Invalid argument.", d));
-	memset(d->thread, 0, sizeof(pthread_t) * d->num_philo);
-
-	d->philo = (t_philo *)malloc(sizeof(t_philo) * d->num_philo);
-	if (!d->philo)
-		return (error_return1("Error: Invalid argument.", d));
-	memset(d->philo, 0, sizeof(t_philo) * d->num_philo);
-
-	d->mutex_forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
-			* d->num_philo);
-	if (!d->mutex_forks)
-		return (error_return1("Error: Invalid argument.", d));
-	memset(d->mutex_forks, 0, sizeof(pthread_mutex_t) * d->num_philo);
-	return (SAFE);
-}
-
-static bool	init_data_fork(t_data *d)
+static bool	init_fork(t_data *data)
 {
 	int	i;
 
+	data->tid_philo = (pthread_t *)malloc(sizeof(pthread_t)
+			* data->num_of_philo);
+	if (!data->tid_philo)
+		return (printf("Error: Malloc failed.\n"), true);
+	memset(data->tid_philo, 0, sizeof(pthread_t) * data->num_of_philo);
+	data->mutex_fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* data->num_of_philo);
+	if (!data->mutex_fork)
+		return (printf("Error: Malloc failed.\n"), true);
+	memset(data->mutex_fork, 0, sizeof(pthread_mutex_t) * data->num_of_philo);
 	i = -1;
-	while (++i < d->num_philo)
-		pthread_mutex_init(&d->mutex_forks[i], NULL);
-	d->philo[0].mutex_fork_left = &d->mutex_forks[0];
-	d->philo[0].mutex_fork_right = &d->mutex_forks[d->num_philo - 1];
+	while (++i < data->num_of_philo)
+		pthread_mutex_init(&data->mutex_fork[i], NULL);
 	i = 0;
-	while (++i < d->num_philo)
+	data->philos[0].mu_fork_left = &data->mutex_fork[0];
+	data->philos[0].mu_fork_right = &data->mutex_fork[data->num_of_philo - 1];
+	while (++i < data->num_of_philo)
 	{
-		d->philo[i].mutex_fork_left = &d->mutex_forks[i];
-		d->philo[i].mutex_fork_right = &d->mutex_forks[i - 1];
+		data->philos[i].mu_fork_left = &data->mutex_fork[i];
+		data->philos[i].mu_fork_right = &data->mutex_fork[i - 1];
 	}
-	return (SAFE);
+	return (false);
 }
 
-static void	init_data_philo(t_data *d)
+bool	init_philo(t_data *data)
 {
 	int	i;
 
+	data->philos = (t_philo *)malloc(sizeof(t_philo) * data->num_of_philo);
+	if (!data->philos)
+		return (printf("Error: Malloc failed.\n"), true);
+	memset(data->philos, 0, sizeof(t_philo) * data->num_of_philo);
 	i = -1;
-	while (++i < d->num_philo)
+	while (++i < data->num_of_philo)
 	{
-		d->philo[i].id = i + 1;
-		d->philo[i].eat_count = 0;
-		d->philo[i].eating = false;
-		d->philo[i].t_to_die = d->t_die;
-		pthread_mutex_init(&d->philo[i].mutex_philo, NULL);
-		d->philo[i].d = d;
+		data->philos[i].id = i + 1;
+		data->philos[i].eat_count = 0;
+		data->philos[i].is_eating = false;
+		data->philos[i].limit_time = data->time_to_die;
+		pthread_mutex_init(&data->philos[i].mu_this_philo, NULL);
+		data->philos[i].data = data;
 	}
-}
-
-bool	init_all(int ac, char *av[], t_data *d)
-{
-	memset(d, 0, sizeof(t_data));
-	if (init_data(ac, av, d) == OUT)
-		return (OUT);
-	if (init_data_alloc(d) == OUT)
-		return (OUT);
-	if (init_data_fork(d) == OUT)
-		return (OUT);
-	init_data_philo(d);
-	return (SAFE);
+	if (init_fork(data))
+		return (destory_data(data), true);
+	return (false);
 }
