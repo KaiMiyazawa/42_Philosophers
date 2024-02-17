@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/11 20:04:57 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/17 15:36:01 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 static bool	check_argv(int argc, char **argv)
 {
-	int	i;
-	int	j;
+	int	c1;
+	int	c2;
 
 	if (argc != 5 && argc != 6)
 	{
 		printf("Error: Invalid number of arguments.\n");
 		return (true);
 	}
-	i = 0;
-	while (argv[++i])
+	c1 = 0;
+	while (argv[++c1])
 	{
-		j = 0;
-		while (argv[i][j] == ' ')
-			j++;
-		if (argv[i][j] < '0' || argv[i][j] > '9')
+		c2 = 0;
+		while (argv[c1][c2] == ' ')
+			c2++;
+		if (argv[c1][c2] < '0' || argv[c1][c2] > '9')
 		{
 			printf("Error: Invalid argument.\n");
 			return (true);
@@ -58,12 +58,12 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 
-	if (check_argv(argc, argv))//error inside.
+	if (check_argv(argc, argv))
 		return (1);
 	memset(&data, 0, sizeof(t_data));
-	if (init_data(&data, argc, argv))//error inside.
+	if (init_data(&data, argc, argv))
 		return (1);
-	if (init_philo(&data))//error inside.
+	if (init_philo(&data))
 		return (1);
 	if (data.num_of_philo == 1)
 	{
@@ -73,11 +73,7 @@ int	main(int argc, char **argv)
 		destory_data(&data);
 		return (0);
 	}
-	if (simulation(&data))//error inside.
+	if (simulation(&data))
 		return (destory_data(&data));
 	return (0);
 }
-//5 800 200 200
-//100 800 200 200
-//105 800 200 200
-//200 800 200 200

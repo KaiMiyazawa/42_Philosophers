@@ -6,12 +6,11 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/11 20:18:25 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/17 15:35:12 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 uint64_t	get_int_time(void)
 {
@@ -25,10 +24,16 @@ void	put_msg(t_philo *philo, char *msg)
 {
 	uint64_t	time;
 
+	if (philo->data->end_flag == true && msg[0] != 'd')
+		return ;
+	if (philo->data->dead_flag_for_print == true)
+		return ;
 	time = get_int_time() - philo->data->start_time;
 	pthread_mutex_lock(&(philo->data->mu_printf));
 	printf("%llu %d %s\n", time, philo->id, msg);
 	pthread_mutex_unlock(&(philo->data->mu_printf));
+	if (msg[0] == 'd')
+		philo->data->dead_flag_for_print = true;
 }
 
 void	my_sleep(int limit_time)
@@ -49,6 +54,8 @@ void	eat(t_philo *philo)
 	}
 	else
 	{
+		if (philo->eat_count == 0)
+			my_sleep(1);
 		pthread_mutex_lock(philo->mu_fork_left);
 		pthread_mutex_lock(philo->mu_fork_right);
 	}
@@ -62,8 +69,6 @@ void	eat(t_philo *philo)
 	my_sleep(philo->data->time_to_eat);
 	philo->is_eating = false;
 	pthread_mutex_unlock(&(philo->mu_this_philo));
-
 	pthread_mutex_unlock(philo->mu_fork_left);
 	pthread_mutex_unlock(philo->mu_fork_right);
 }
-

@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:27:03 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/07 02:26:27 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/17 15:36:18 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 
 # include <stdbool.h>
 # include <limits.h>
-
 
 typedef struct s_philo
 {
@@ -58,6 +57,7 @@ typedef struct s_data
 
 	int				finished_count;
 	bool			end_flag;
+	bool			dead_flag_for_print;
 	pthread_mutex_t	mu_data;
 }	t_data;
 

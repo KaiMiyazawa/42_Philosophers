@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:53:52 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/07 11:33:40 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/17 15:36:26 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ bool	init_data(t_data *data, int ac, char **av)
 	pthread_mutex_init(&data->mu_printf, NULL);
 	pthread_mutex_init(&data->mu_data, NULL);
 	data->end_flag = false;
+	data->dead_flag_for_print = false;
 	data->finished_count = 0;
 	return (false);
 }
