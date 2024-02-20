@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+         #
+#    By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/26 13:38:25 by aeryilma          #+#    #+#              #
-#    Updated: 2024/02/05 21:13:38 by miyazawa.ka      ###   ########.fr        #
+#    Updated: 2024/02/20 11:32:05 by kmiyazaw         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 
 CC		= gcc -g
-CFLAGS	= -Wall -Wextra -Werror -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror
 INCLUDE	= -Iinclude
 
 SRC		= $(shell find src -name "*.c")

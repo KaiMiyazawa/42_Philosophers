@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/17 15:36:01 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/20 11:43:56 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,14 @@ int	main(int argc, char **argv)
 		return (1);
 	if (data.num_of_philo == 1)
 	{
-		printf("0 1 has taken a fork\n");
-		my_sleep(data.time_to_die);
-		printf("0 1 died\n");
-		destory_data(&data);
-		return (0);
+		data.start_time = get_int_time();
+		data.philos[0].limit_time = data.start_time + data.time_to_die;
+		if (pthread_create(&data.tid_philo[0], NULL, philo, &data.philos[0]))
+			return (printf("Error: pthread_create failed.\n"), 1);
+		pthread_detach(data.tid_philo[0]);
+		while (data.end_flag == false)
+			my_sleep(0);
+		return (destory_data(&data), 0);
 	}
 	if (simulation(&data))
 		return (destory_data(&data));

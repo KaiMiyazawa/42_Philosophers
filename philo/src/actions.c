@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/17 15:35:12 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/02/20 11:43:23 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,29 @@ void	my_sleep(int limit_time)
 		usleep(limit_time / 100);
 }
 
-void	eat(t_philo *philo)
+static void	take_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->mu_fork_right);
+		put_msg(philo, "has taken a fork");
 		pthread_mutex_lock(philo->mu_fork_left);
 	}
 	else
 	{
 		if (philo->eat_count == 0)
-			my_sleep(1);
+			my_sleep(0);
 		pthread_mutex_lock(philo->mu_fork_left);
+		put_msg(philo, "has taken a fork");
 		pthread_mutex_lock(philo->mu_fork_right);
 	}
 	put_msg(philo, "has taken a fork");
-	put_msg(philo, "has taken a fork");
+	return ;
+}
+
+void	eat(t_philo *philo)
+{
+	take_forks(philo);
 	put_msg(philo, "is eating");
 	pthread_mutex_lock(&(philo->mu_this_philo));
 	philo->is_eating = true;
