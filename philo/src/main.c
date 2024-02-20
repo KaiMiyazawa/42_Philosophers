@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/20 11:43:56 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:50:04 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ bool	destory_data(t_data *data)
 	free(data->philos);
 	free(data->mutex_fork);
 	free(data->tid_philo);
+	pthread_mutex_destroy(&data->mu_data);
 	return (true);
 }
 
