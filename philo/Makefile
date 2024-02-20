@@ -6,14 +6,14 @@
 #    By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/26 13:38:25 by aeryilma          #+#    #+#              #
-#    Updated: 2024/02/20 12:50:26 by miyazawa.ka      ###   ########.fr        #
+#    Updated: 2024/02/20 13:16:02 by miyazawa.ka      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 
 CC		= gcc -g
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -pthread -Wall -Wextra -Werror -fsanitize=thread
 INCLUDE	= -Iinclude
 
 SRC		= $(shell find src -name "*.c")
