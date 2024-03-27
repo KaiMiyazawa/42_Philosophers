@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:27:03 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/17 15:36:18 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/03/24 11:48:03 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <stdatomic.h>
 # include <pthread.h>
 
 # include <stdbool.h>
@@ -25,10 +26,10 @@
 
 typedef struct s_philo
 {
-	int				id;
-	int				eat_count;
-	bool			is_eating;
-	uint64_t		limit_time;
+	atomic_int				id;
+	atomic_int				eat_count;
+	atomic_bool			is_eating;
+	atomic_ullong		limit_time;
 
 	pthread_mutex_t	mu_this_philo;
 	pthread_mutex_t	*mu_fork_left;
@@ -40,11 +41,11 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	int				num_of_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				num_of_must_eat;
+	atomic_int				num_of_philo;
+	atomic_int				time_to_die;
+	atomic_int				time_to_eat;
+	atomic_int				time_to_sleep;
+	atomic_int				num_of_must_eat;
 
 	uint64_t		start_time;
 
@@ -55,9 +56,9 @@ typedef struct s_data
 	pthread_mutex_t	*mutex_fork;
 	pthread_mutex_t	mu_printf;
 
-	int				finished_count;
-	bool			end_flag;
-	bool			dead_flag_for_print;
+	atomic_int				finished_count;
+	atomic_bool			end_flag;
+	atomic_bool			dead_flag_for_print;
 	pthread_mutex_t	mu_data;
 }	t_data;
 
