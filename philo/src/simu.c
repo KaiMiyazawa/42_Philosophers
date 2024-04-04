@@ -6,7 +6,7 @@
 /*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 22:14:01 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/03/27 18:58:44 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:11:42 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ bool	simulation(t_data *data)
 		if (pthread_join(data->tid_philo[i], NULL))
 			return (printf("Error: pthread_join failed.\n"), true);
 	}
-	if (pthread_join(data->tid_g_monitor, NULL)) // この行を追加
+	if (data->num_of_must_eat > 0
+		&& pthread_join(data->tid_g_monitor, NULL)) // この行を追加
 		return (printf("Error: pthread_join failed.\n"), true);
 	return (false);
 }

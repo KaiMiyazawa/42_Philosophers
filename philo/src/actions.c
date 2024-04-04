@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/20 11:43:23 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:22:28 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	my_sleep(int limit_time)
 
 	time = get_int_time();
 	while (get_int_time() < time + limit_time)
-		usleep(limit_time / 100);
+		usleep(limit_time / 10);
 }
 
 static void	take_forks(t_philo *philo)
