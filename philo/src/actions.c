@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/04 16:22:28 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/04 16:50:06 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,16 @@ void	put_msg(t_philo *philo, char *msg)
 {
 	uint64_t	time;
 
-	if (philo->data->end_flag == true && msg[0] != 'd')
-		return ;
 	if (philo->data->dead_flag_for_print == true)
+		return ;
+	if (philo->data->end_flag == true && msg[0] != 'd')
 		return ;
 	time = get_int_time() - philo->data->start_time;
 	pthread_mutex_lock(&(philo->data->mu_printf));
 	printf("%llu %d %s\n", time, philo->id, msg);
-	pthread_mutex_unlock(&(philo->data->mu_printf));
 	if (msg[0] == 'd')
 		philo->data->dead_flag_for_print = true;
+	pthread_mutex_unlock(&(philo->data->mu_printf));
 }
 
 void	my_sleep(int limit_time)
