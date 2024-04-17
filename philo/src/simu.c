@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simu.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 22:14:01 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/04 16:36:09 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/17 17:17:58 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ void	*philo(void *p_philo)
 			break ;
 		put_msg(philo, "is thinking");
 	}
-	//if (pthread_join(philo->tid_monitor, NULL))
-	//	return (printf("Error: pthread_join failed.\n"), (void *)0);
 	return ((void *)0);
 }
 
@@ -85,7 +83,6 @@ bool	simulation(t_data *data)
 	if (data->num_of_must_eat > 0
 		&& pthread_create(&data->tid_g_monitor, NULL, g_monitor, data))
 		return (printf("Error: pthread_create failed.\n"), true);
-	//pthread_detach(data->tid_g_monitor);
 	data->start_time = get_int_time();
 	i = -1;
 	while (++i < data->num_of_philo)
@@ -101,7 +98,7 @@ bool	simulation(t_data *data)
 			return (printf("Error: pthread_join failed.\n"), true);
 	}
 	if (data->num_of_must_eat > 0
-		&& pthread_join(data->tid_g_monitor, NULL)) // この行を追加
+		&& pthread_join(data->tid_g_monitor, NULL))
 		return (printf("Error: pthread_join failed.\n"), true);
 	return (false);
 }
