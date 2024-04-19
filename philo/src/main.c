@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/03/26 00:53:13 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:16:59 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	main(int argc, char **argv)
 			return (printf("Error: pthread_create failed.\n"), 1);
 		pthread_detach(data.tid_philo[0]);
 		while (data.end_flag == false)
-			my_sleep(0);
+			my_sleep(10);
 		return (destory_data(&data), 0);
 	}
 	if (simulation(&data))

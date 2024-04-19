@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/04 16:50:06 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/19 15:26:28 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ uint64_t	get_int_time(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return ((uint64_t)time.tv_sec * 1000 + (uint64_t)time.tv_usec / 1000);
+	return ((uint64_t)time.tv_sec * 1000 + (uint64_t)time.tv_usec / 1000
+		+ (uint64_t)(time.tv_usec % 1000 >= 500));
 }
 
 void	put_msg(t_philo *philo, char *msg)
@@ -55,8 +56,6 @@ static void	take_forks(t_philo *philo)
 	}
 	else
 	{
-		if (philo->eat_count == 0)
-			my_sleep(0);
 		pthread_mutex_lock(philo->mu_fork_left);
 		put_msg(philo, "has taken a fork");
 		pthread_mutex_lock(philo->mu_fork_right);

@@ -3,14 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:53:52 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/02/17 15:36:26 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/19 15:05:43 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static bool	check_invalid_argument(t_data *data, int ac)
+{
+	if (data->num_of_philo < 1)
+		return (true);
+	if (data->time_to_die < 1)
+		return (true);
+	if (data->time_to_eat < 1)
+		return (true);
+	if (data->time_to_sleep < 1)
+		return (true);
+	if (ac == 6 && data->num_of_must_eat < 1)
+		return (true);
+	return (false);
+}
 
 bool	init_data(t_data *data, int ac, char **av)
 {
@@ -22,8 +37,7 @@ bool	init_data(t_data *data, int ac, char **av)
 		data->num_of_must_eat = ft_atoi(av[5]);
 	else
 		data->num_of_must_eat = -1;
-	if (data->num_of_philo < 1 || data->time_to_die < 0 || data->time_to_eat < 0
-		|| data->time_to_sleep < 0 || data->num_of_must_eat < -1)
+	if (check_invalid_argument(data, ac))
 		return (printf("Error: Invalid argument.\n"), true);
 	pthread_mutex_init(&data->mu_printf, NULL);
 	pthread_mutex_init(&data->mu_data, NULL);
