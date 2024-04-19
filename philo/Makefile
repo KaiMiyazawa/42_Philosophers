@@ -12,12 +12,12 @@
 
 NAME	= philo
 
-CC		= gcc -g
+CC	= gcc -g
 CFLAGS	= -pthread -Wall -Wextra -Werror -fsanitize=thread
 INCLUDE	= -Iinclude
 
-SRC		= $(shell find src -name "*.c")
-OBJ		= $(SRC:.c=.o)
+SRC	= $(shell find src -name "*.c")
+OBJ	= $(SRC:.c=.o)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDE)
