@@ -6,7 +6,7 @@
 /*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 01:54:12 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/19 15:26:28 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:17:10 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@ void	put_msg(t_philo *philo, char *msg)
 {
 	uint64_t	time;
 
-	if (philo->data->dead_flag_for_print == true)
-		return ;
-	if (philo->data->end_flag == true && msg[0] != 'd')
-		return ;
-	time = get_int_time() - philo->data->start_time;
 	pthread_mutex_lock(&(philo->data->mu_printf));
+	if (philo->data->dead_flag_for_print == true
+		|| (philo->data->end_flag == true && msg[0] != 'd'))
+	{
+		pthread_mutex_unlock(&(philo->data->mu_printf));
+		return ;
+	}
+	time = get_int_time() - philo->data->start_time;
 	printf("%llu %d %s\n", time, philo->id, msg);
 	if (msg[0] == 'd')
 		philo->data->dead_flag_for_print = true;

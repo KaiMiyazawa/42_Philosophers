@@ -6,7 +6,7 @@
 /*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/19 14:16:59 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:16:12 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,21 @@ bool	destory_data(t_data *data)
 	return (true);
 }
 
+static int	one_case(t_data *data)
+{
+	data->start_time = get_int_time();
+	data->philos[0].limit_time = data->start_time + data->time_to_die;
+	if (pthread_create(&data->tid_philo[0], NULL, philo, &data->philos[0]))
+	{
+		destory_data(data);
+		return (printf("Error: pthread_create failed.\n"), 1);
+	}
+	pthread_detach(data->tid_philo[0]);
+	while (data->end_flag == false)
+		my_sleep(10);
+	return (destory_data(data), 0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
@@ -65,19 +80,15 @@ int	main(int argc, char **argv)
 	if (init_data(&data, argc, argv))
 		return (1);
 	if (init_philo(&data))
-		return (1);
+		return (destory_data(&data), 1);
 	if (data.num_of_philo == 1)
-	{
-		data.start_time = get_int_time();
-		data.philos[0].limit_time = data.start_time + data.time_to_die;
-		if (pthread_create(&data.tid_philo[0], NULL, philo, &data.philos[0]))
-			return (printf("Error: pthread_create failed.\n"), 1);
-		pthread_detach(data.tid_philo[0]);
-		while (data.end_flag == false)
-			my_sleep(10);
-		return (destory_data(&data), 0);
-	}
+		return (one_case(&data));
 	if (simulation(&data))
 		return (destory_data(&data));
-	return (0);
+	return (destory_data(&data), 0);
+}
+
+__attribute__((destructor))
+static void destructor() {
+    system("leaks -q philo");
 }

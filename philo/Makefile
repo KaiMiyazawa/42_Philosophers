@@ -6,14 +6,15 @@
 #    By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/26 13:38:25 by aeryilma          #+#    #+#              #
-#    Updated: 2024/04/17 17:37:57 by kmiyazaw         ###   ########.fr        #
+#    Updated: 2024/04/24 16:18:44 by kmiyazaw         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 
-CC	= gcc -g
-CFLAGS	= -pthread -Wall -Wextra -Werror -fsanitize=thread
+CC	= cc -g
+CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	+= -pthread -fsanitize=address
 INCLUDE	= -Iinclude
 
 SRC	= $(shell find src -name "*.c")
