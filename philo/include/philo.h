@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:27:03 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/26 18:22:34 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/26 18:48:10 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct s_philo
 	pthread_mutex_t	*mu_fork_left;
 	pthread_mutex_t	*mu_fork_right;
 
-	//pthread_t		tid_monitor;
 	struct s_data	*data;
 }	t_philo;
 
@@ -78,5 +77,6 @@ int			ft_atoi(const char *str);
 bool		destory_data(t_data *data);
 
 void		*all_monitor(void *p_data);
+void		*eat_monitor(void *p_data);
 
 #endif

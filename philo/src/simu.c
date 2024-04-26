@@ -3,38 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   simu.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
+/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 22:14:01 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/26 18:22:07 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/26 18:44:59 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	*eat_monitor(void *p_data)
-{
-	t_data	*d;
-
-	d = (t_data *)p_data;
-	while (d->end_flag == false)
-	{
-		pthread_mutex_lock(&(d->mu_data));
-		if (d->finished_count >= d->num_of_philo)
-			d->end_flag = true;
-		pthread_mutex_unlock(&(d->mu_data));
-	}
-	return ((void *)0);
-}
 
 void	*philo(void *p_philo)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)p_philo;
-	//if (pthread_create(&philo->tid_monitor, NULL, monitor, philo))
-	//	return (printf("Error: pthread_create failed.\n"), (void *)0);
-	//pthread_detach(philo->tid_monitor);
 	while (philo->data->end_flag == false)
 	{
 		eat(philo);
@@ -49,37 +31,22 @@ void	*philo(void *p_philo)
 	return ((void *)0);
 }
 
-void	*all_monitor(void *p_data)
+static bool	join_all_threads(t_data *data)
 {
-	t_data	*d;
-	int		i;
+	int	i;
 
-	d = (t_data *)p_data;
-	while (d->end_flag == false)
+	i = -1;
+	while (++i < data->num_of_philo)
 	{
-		i = -1;
-		while (++i < d->num_of_philo)
-		{
-			//if (get_int_time() > d->philos[i].limit_time)
-			if (get_int_time() > d->philos[i].limit_time && d->philos[i].is_eating == false)
-			{
-				pthread_mutex_lock(&(d->mu_data));
-				d->end_flag = true;
-				pthread_mutex_unlock(&(d->mu_data));
-				put_msg(&d->philos[i], "died");
-			}
-			if (d->philos[i].eat_count >= d->num_of_must_eat)
-			{
-				pthread_mutex_lock(&(d->mu_data));
-				d->finished_count++;
-				pthread_mutex_unlock(&(d->mu_data));
-				pthread_mutex_lock(&(d->philos[i].mu_this_philo));
-				d->philos[i].eat_count++;
-				pthread_mutex_unlock(&(d->philos[i].mu_this_philo));
-			}
-		}
+		if (pthread_join(data->tid_philo[i], NULL))
+			return (printf("Error: pthread_join failed.\n"), true);
 	}
-	return ((void *)0);
+	if (data->num_of_must_eat > 0
+		&& pthread_join(data->tid_eat_monitor, NULL))
+		return (printf("Error: pthread_join failed.\n"), true);
+	if (pthread_join(data->tid_all_monitor, NULL))
+		return (printf("Error: pthread_join failed.\n"), true);
+	return (false);
 }
 
 bool	simulation(t_data *data)
@@ -97,18 +64,7 @@ bool	simulation(t_data *data)
 		if (pthread_create(&data->tid_philo[i], NULL, philo, &data->philos[i]))
 			return (printf("Error: pthread_create failed.\n"), true);
 	}
-	if(pthread_create(&data->tid_all_monitor, NULL, all_monitor, data))
+	if (pthread_create(&data->tid_all_monitor, NULL, all_monitor, data))
 		return (printf("Error: pthread_create failed.\n"), true);
-	i = -1;
-	while (++i < data->num_of_philo)
-	{
-		if (pthread_join(data->tid_philo[i], NULL))
-			return (printf("Error: pthread_join failed.\n"), true);
-	}
-	if (data->num_of_must_eat > 0
-		&& pthread_join(data->tid_eat_monitor, NULL))
-		return (printf("Error: pthread_join failed.\n"), true);
-	if (pthread_join(data->tid_all_monitor, NULL))
-		return (printf("Error: pthread_join failed.\n"), true);
-	return (false);
+	return (join_all_threads(data));
 }

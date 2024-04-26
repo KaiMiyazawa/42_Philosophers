@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+         #
+#    By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/26 13:38:25 by aeryilma          #+#    #+#              #
-#    Updated: 2024/04/26 18:11:20 by miyazawa.ka      ###   ########.fr        #
+#    Updated: 2024/04/26 18:53:13 by kmiyazaw         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME	= philo
 
 CC	= cc -g
 CFLAGS	= -Wall -Wextra -Werror
-CFLAGS	+= -pthread -fsanitize=thread
+#CFLAGS	+= -pthread -fsanitize=address
 INCLUDE	= -Iinclude
 
 SRC	= $(shell find src -name "*.c")
