@@ -6,7 +6,7 @@
 /*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 22:14:01 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/26 18:12:47 by miyazawa.ka      ###   ########.fr       */
+/*   Updated: 2024/04/26 18:22:07 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,33 +26,6 @@ void	*eat_monitor(void *p_data)
 	}
 	return ((void *)0);
 }
-
-//void	all_monitor(void )
-//{
-//	t_philo		*philo;
-
-//	philo = (t_philo *)p_philo;
-//	while (philo->data->end_flag == false)
-//	{
-//		if (get_int_time() > philo->limit_time && philo->is_eating == false)
-//		{
-//			pthread_mutex_lock(&(philo->data->mu_data));
-//			philo->data->end_flag = true;
-//			pthread_mutex_unlock(&(philo->data->mu_data));
-//			put_msg(philo, "died");
-//		}
-//		if (philo->eat_count >= philo->data->num_of_must_eat)
-//		{
-//			pthread_mutex_lock(&(philo->data->mu_data));
-//			philo->data->finished_count++;
-//			pthread_mutex_unlock(&(philo->data->mu_data));
-//			pthread_mutex_lock(&(philo->mu_this_philo));
-//			philo->eat_count++;
-//			pthread_mutex_unlock(&(philo->mu_this_philo));
-//		}
-//	}
-//	//return ((void *)0);
-//}
 
 void	*philo(void *p_philo)
 {
@@ -87,6 +60,7 @@ void	*all_monitor(void *p_data)
 		i = -1;
 		while (++i < d->num_of_philo)
 		{
+			//if (get_int_time() > d->philos[i].limit_time)
 			if (get_int_time() > d->philos[i].limit_time && d->philos[i].is_eating == false)
 			{
 				pthread_mutex_lock(&(d->mu_data));
