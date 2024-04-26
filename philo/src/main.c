@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyazawa.kai.0823 <miyazawa.kai.0823@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:26:44 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/24 16:16:12 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:10:50 by miyazawa.ka      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,13 @@ static int	one_case(t_data *data)
 		destory_data(data);
 		return (printf("Error: pthread_create failed.\n"), 1);
 	}
+	if (pthread_create(&data->tid_all_monitor, NULL, all_monitor, data))
+	{
+		destory_data(data);
+		return (printf("Error: pthread_create failed.\n"), 1);
+	}
 	pthread_detach(data->tid_philo[0]);
+	pthread_detach(data->tid_all_monitor);
 	while (data->end_flag == false)
 		my_sleep(10);
 	return (destory_data(data), 0);
@@ -88,7 +94,7 @@ int	main(int argc, char **argv)
 	return (destory_data(&data), 0);
 }
 
-__attribute__((destructor))
-static void destructor() {
-    system("leaks -q philo");
-}
+//__attribute__((destructor))
+//static void destructor() {
+//    system("leaks -q philo");
+//}
