@@ -6,7 +6,7 @@
 /*   By: kmiyazaw <kmiyazaw@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 18:27:03 by miyazawa.ka       #+#    #+#             */
-/*   Updated: 2024/04/19 15:05:37 by kmiyazaw         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:48:10 by kmiyazaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct s_philo
 	pthread_mutex_t	*mu_fork_left;
 	pthread_mutex_t	*mu_fork_right;
 
-	pthread_t		tid_monitor;
 	struct s_data	*data;
 }	t_philo;
 
@@ -49,7 +48,8 @@ typedef struct s_data
 
 	uint64_t		start_time;
 
-	pthread_t		tid_g_monitor;
+	pthread_t		tid_eat_monitor;
+	pthread_t		tid_all_monitor;
 	pthread_t		*tid_philo;
 
 	t_philo			*philos;
@@ -75,5 +75,8 @@ void		*philo(void *p_philo);
 
 int			ft_atoi(const char *str);
 bool		destory_data(t_data *data);
+
+void		*all_monitor(void *p_data);
+void		*eat_monitor(void *p_data);
 
 #endif
