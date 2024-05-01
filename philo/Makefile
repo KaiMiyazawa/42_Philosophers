@@ -15,9 +15,10 @@ NAME	= philo
 CC	= cc -g
 CFLAGS	= -Wall -Wextra -Werror
 #CFLAGS	+= -pthread -fsanitize=address
+#CFLAGS	+= -pthread -fsanitize=thread
 INCLUDE	= -Iinclude
 
-SRC	= $(shell find src -name "*.c")
+SRC	= src/actions.c src/ft_utils.c src/init.c src/main.c src/monitor.c src/simu.c
 OBJ	= $(SRC:.c=.o)
 
 %.o: %.c
@@ -29,7 +30,7 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(INCLUDE) -o $(NAME)
 
 clean:
-	@find src -name "*.o" -delete
+	@rm -rf OBJ
 	@echo "Objects Deleted"
 
 fclean: clean
